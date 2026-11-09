@@ -1,118 +1,111 @@
 # AI-Powered PDF Summarizer
 
-An automated, lightweight Python application built for Google Colab that extracts text from PDF documents and generates concise, AI-powered summaries using the open-source **Qwen2.5-0.5B-Instruct** language model.
+An automated, lightweight Python application designed for Google Colab that extracts text from uploaded PDF documents and generates concise, AI-powered summaries using the open-source **Qwen2.5-0.5B-Instruct** Large Language Model (LLM).
 
 ## 1. Project Overview
 
 ### Objective
 
-Reading lengthy documents, reports and research papers can be time-consuming. This project simplifies the process by automating PDF text extraction and summarisation using an open-source Large Language Model (LLM).
+Reading through lengthy documents, research papers and reports can be time-consuming. This project aims to simplify the process by automating PDF text extraction and summarisation using an open-source language model.
 
-The application allows users to upload a PDF document, extract its text programmatically and generate a concise summary without requiring paid AI API subscriptions or external API keys.
+The application allows users to upload a PDF document, programmatically extract its text and generate an AI-powered summary without requiring paid API keys or external AI API subscriptions.
 
-The model runs within the Google Colab runtime rather than relying on a separate paid summarisation API.
+The project combines Python, Hugging Face Transformers and Qwen2.5-0.5B-Instruct to provide an accessible approach to automated document summarisation.
 
 ### Key Features
 
-- Automated PDF uploading and text extraction.
-- AI-powered text summarisation.
-- Lightweight, open-source language model.
-- No paid API keys or external AI API subscriptions required.
-- Google Colab compatibility.
-- GPU acceleration when available.
+- Automated PDF uploading through Google Colab.
+- Text extraction from individual PDF pages.
+- AI-powered document summarisation.
+- Open-source language model integration.
+- No paid API keys or external AI API tokens required.
+- Lightweight implementation using Python.
 
 ## 2. Technologies and Components
 
 | Technology | Purpose |
 |---|---|
 | Python | Core programming language used to coordinate the application. |
-| Hugging Face Transformers | Loads and executes the language model. |
-| Qwen2.5-0.5B-Instruct | Open-source, instruction-tuned language model used for summarisation. |
-| PyPDF | Extracts text from individual PDF pages. |
-| PyTorch | Provides the deep learning framework for model inference. |
-| Accelerate | Supports automatic device mapping and hardware allocation. |
-| Google Colab Files API | Provides the interface for uploading local PDF documents. |
+| Hugging Face Transformers | Provides the pipeline used to load and run the language model. |
+| Qwen2.5-0.5B-Instruct | Lightweight, instruction-tuned language model used for text generation and summarisation. |
+| PyPDF | Extracts text from uploaded PDF documents. |
+| PyTorch | Deep learning framework supporting model execution. |
+| Google Colab Files API | Provides the interface for uploading local PDF documents into the Colab environment. |
 
-## 3. System Architecture and Workflow
+## 3. System Architecture and Summarisation Workflow
 
-The application follows a straightforward processing pipeline.
+The application follows a sequential processing pipeline, moving from document upload to text extraction and AI-generated summary output.
 
 ### Architecture Diagram
 
 ```mermaid
 flowchart TD
-    A[Start Google Colab Notebook]
-    B[Install Required Libraries]
-    C[Load Qwen2.5-0.5B-Instruct]
-    D[Upload PDF Document]
-    E[Extract Text Using PyPDF]
-    F[Combine Extracted Page Text]
-    G[Truncate Input to 5,000 Characters]
-    H[Construct Summarisation Prompt]
-    I[Generate Summary Using Qwen]
-    J[Display Final Summary]
+    A["Start Google Colab Notebook"]
+    B["Install Required Libraries"]
+    C["Load Qwen2.5-0.5B-Instruct"]
+    D["Upload PDF Document"]
+    E["Read PDF Using PyPDF"]
+    F["Extract Text From Each Page"]
+    G["Combine Extracted Text"]
+    H["Limit Input to First 5,000 Characters"]
+    I["Construct Summarisation Prompt"]
+    J["Generate Summary Using Qwen"]
+    K["Display Generated Text"]
 
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> H
-    H --> I
-    I --> J
+    A --> B --> C --> D --> E
+    E --> F --> G --> H --> I --> J --> K
 ```
 
 ### How It Works
 
 **Step 1: Environment Setup**
 
-The notebook installs the required Python libraries, including Transformers, PyPDF and Accelerate.
+The required Python libraries are installed within the Google Colab environment using pip.
 
 **Step 2: Model Initialisation**
 
-Hugging Face Transformers downloads and loads the Qwen2.5-0.5B-Instruct model into the Colab runtime.
+Hugging Face Transformers loads the Qwen2.5-0.5B-Instruct model through its `pipeline()` function.
 
-The application automatically selects an available hardware device using `device_map="auto"`.
+The model weights are downloaded from Hugging Face into the Colab runtime. No external API key or authentication token is required for this public model.
 
 **Step 3: PDF Upload**
 
-Google Colab's Files API presents an upload interface, allowing the user to select a PDF document from their local computer.
+Google Colab's Files API provides an upload interface that allows users to select a PDF document from their local computer.
 
 **Step 4: Text Extraction**
 
-PyPDF reads the uploaded document and extracts text from each page sequentially.
+PyPDF opens the uploaded document and iterates through its pages.
 
-The extracted text is combined into a single string for further processing.
+The `extract_text()` method retrieves the available digital text from each page, which is then combined into a single string.
 
 **Step 5: Input Truncation**
 
-The combined text is restricted to the first 5,000 characters using Python string slicing.
+The extracted document text is restricted to the first 5,000 characters using Python string slicing.
 
-This is an intentional limitation of the current implementation and is explained in Section 5.
+This keeps the amount of text supplied to the model within the application's chosen input limit.
 
 **Step 6: Prompt Construction**
 
-The extracted text is inserted into a structured instruction prompt asking the language model to identify the important ideas and produce a concise summary.
+The selected text is inserted into a structured prompt instructing the model to summarise the document and identify its important ideas and details.
 
 **Step 7: AI Inference**
 
-Qwen2.5-0.5B-Instruct processes the prompt and generates a summary of up to 300 new tokens.
+Qwen2.5-0.5B-Instruct processes the prompt and generates a response, with a maximum generation allowance of 300 new tokens.
 
 **Step 8: Summary Output**
 
-The generated summary is displayed directly in the Google Colab notebook.
+The generated text is displayed directly in the Google Colab notebook.
 
 ## 4. Installation and Execution Guide
 
-The project is designed to run directly in Google Colab without requiring a local Python installation.
+The application is designed to run directly in Google Colab. A local Python installation is not required.
 
 ### Prerequisites
 
 - A Google account.
-- Internet connectivity for downloading the required libraries and model.
+- Internet connectivity.
 - A web browser.
-- A PDF document containing extractable text.
+- A PDF document containing extractable digital text.
 
 ### Step 1: Open Google Colab
 
@@ -124,28 +117,29 @@ Sign in with your Google account and select **New Notebook**.
 
 ### Step 2: Configure the Runtime
 
-For improved performance, configure the notebook to use GPU acceleration.
+For improved performance, you can enable GPU acceleration.
 
 1. Open the **Runtime** menu.
 2. Select **Change runtime type**.
 3. Under Hardware accelerator, select **T4 GPU**, if available.
 4. Click **Save**.
 
-GPU availability depends on Google's current resource allocation and account limits. The application can also run on a CPU, although inference may be slower.
+GPU access depends on Google's availability and account limits. The original implementation does not explicitly configure GPU allocation, so performance will depend on the hardware available to the Transformers pipeline.
 
 ### Step 3: Install the Required Libraries
 
-Create a code cell and execute:
+Create a code cell and paste the following installation commands:
 
 ```python
-!pip install -q transformers pypdf accelerate
+!pip install -q transformers torch pypdf accelerate
+!pip install pypdf
 ```
 
-PyTorch is generally already available in Google Colab. If it is missing from your runtime, install it separately using the appropriate PyTorch installation instructions.
+Execute the cell and wait for the installation to finish.
 
-### Step 4: Import Libraries and Initialise the Model
+### Step 4: Import Libraries and Load the Model
 
-Create another code cell and execute:
+Create a new code cell and paste the following:
 
 ```python
 import torch
@@ -153,219 +147,178 @@ from transformers import pipeline
 from pypdf import PdfReader
 from google.colab import files
 
-# Select an appropriate precision for the available hardware
-dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+print("Downloading and initializing Qwen2.5-0.5B-Instruct (No tokens required)...")
 
-print("Loading Qwen2.5-0.5B-Instruct...")
-
+print("Downloading and initializing BART-Large-CNN...")
 generator = pipeline(
     "text-generation",
-    model="Qwen/Qwen2.5-0.5B-Instruct",
-    torch_dtype=dtype,
-    device_map="auto"
+    model="Qwen/Qwen2.5-0.5B-Instruct"
 )
 
-print("Model successfully loaded!")
+print("AI Model is fully loaded and ready to use!")
 ```
 
-**Note:** The first execution downloads the model weights from Hugging Face. This requires an internet connection and may take some time depending on network speed.
+Execute the cell.
+
+The model will be downloaded from Hugging Face and initialised in the Colab environment. The first download may take some time depending on your internet connection.
+
+**Note:** The BART-Large-CNN message is retained from the original script. The actual model being loaded is Qwen2.5-0.5B-Instruct.
 
 ### Step 5: Upload and Extract the PDF
 
-Create another code cell:
+Create another code cell and paste:
 
 ```python
-# Upload a PDF document
 uploaded = files.upload()
 
 filename = next(iter(uploaded))
 
-print(f"\nUploaded file: {filename}")
+print("You uploaded:",filename)
 
-# Read the PDF
 reader = PdfReader(filename)
 
-print(f"Number of pages: {len(reader.pages)}")
+texts= ""
 
-# Extract text from all pages
-texts = ""
+print(f"The file {filename} contains {len(reader.pages)} page(s).")
 
 for page in reader.pages:
-    text_content = page.extract_text()
-
-    if text_content:
-        texts += text_content + "\n"
-
-print(f"Extracted characters: {len(texts)}")
-
-if not texts.strip():
-    raise ValueError(
-        "No extractable text found. "
-        "The PDF may contain scanned images."
-    )
+  texts += page.extract_text() + "\n"
 ```
 
-### Step 6: Generate the Summary
-
-Create the final code cell:
-
-```python
-# Limit the input to 5,000 characters
-short_text = texts[:5000]
-
-if len(texts) > 5000:
-    print(
-        "Warning: Document exceeds 5,000 characters. "
-        "Only the first 5,000 characters will be summarised."
-    )
-
-# Construct the summarisation prompt
-messages = [
-    {
-        "role": "system",
-        "content": (
-            "You are a helpful document summarisation assistant. "
-            "Produce concise, accurate summaries that preserve "
-            "the important ideas and details."
-        )
-    },
-    {
-        "role": "user",
-        "content": (
-            "Summarise the following document. "
-            "Identify its main arguments, important findings "
-            "and relevant details.\n\n"
-            f"DOCUMENT:\n{short_text}"
-        )
-    }
-]
-
-prompt = generator.tokenizer.apply_chat_template(
-    messages,
-    tokenize=False,
-    add_generation_prompt=True
-)
-
-print("\nGenerating summary...")
-
-result = generator(
-    prompt,
-    max_new_tokens=300,
-    do_sample=False,
-    return_full_text=False
-)
-
-summary = result[0]["generated_text"]
-
-print("\n========== DOCUMENT SUMMARY ==========\n")
-print(summary)
-print("\n======================================")
-```
-
-### Step 7: Run the Application
-
-Execute the notebook cells sequentially, from top to bottom.
+Execute the cell.
 
 When the upload interface appears:
 
 1. Click **Choose Files**.
-2. Select a PDF document from your computer.
-3. Wait for the PDF extraction process.
-4. Allow the model to generate the summary.
-5. Read the resulting summary displayed in the notebook.
+2. Select the PDF document you want to summarise.
+3. Wait for the upload to complete.
+4. The notebook will identify the uploaded filename and number of pages before extracting the available text.
+
+### Step 6: Generate the Summary
+
+Create the final code cell and paste:
+
+```python
+short_text = texts[:5000]
+
+prompt = f"""
+Summarize the following text.
+Include the important ideas and details.
+
+TEXT:
+{short_text}
+
+SUMMARY:
+"""
+
+result = generator(prompt, max_new_tokens=300)
+
+print(result[0]["generated_text"])
+```
+
+Execute the cell.
+
+The extracted text is inserted into the prompt, passed to Qwen2.5-0.5B-Instruct and processed to generate the summary.
+
+### Step 7: View the Output
+
+Once inference is complete, the generated text will appear directly below the final code cell.
 
 The application is now ready to use.
 
 ## 5. Important Limitation: 5,000-Character Input Ceiling
 
-**The current implementation does not summarise the entire contents of every uploaded PDF.**
+**The current implementation only processes the first 5,000 characters of extracted PDF text. It does not summarise the entire contents of longer documents.**
 
-The following line imposes a strict input restriction:
+This limitation is imposed by the following line:
 
 ```python
 short_text = texts[:5000]
 ```
 
-Python string slicing selects only the first 5,000 characters of the extracted document.
+Python string slicing selects characters from the beginning of the extracted text up to, but not including, character 5,000.
 
 Consequently:
 
-- Short documents containing fewer than 5,000 extracted characters can be processed in full.
-- Longer documents are truncated after the first 5,000 characters.
-- Content appearing later in the document is excluded from the summarisation process.
-- Important conclusions, findings or recommendations appearing towards the end of a lengthy document may therefore be missed.
+- Documents containing fewer than 5,000 extracted characters can be processed in full.
+- Documents exceeding 5,000 characters are automatically truncated.
+- Any content appearing after the first 5,000 characters is excluded.
+- Important findings, conclusions and recommendations appearing later in a document may therefore be missed.
 
-It is important to distinguish between the model's context window and the application's current input restriction. Qwen2.5-0.5B-Instruct supports a substantially larger context than the 5,000-character limit imposed by this particular script.
+**Important distinction:** The 5,000-character restriction is an implementation choice in the current script, not the maximum context capacity of Qwen2.5-0.5B-Instruct.
 
-The 5,000-character restriction is an implementation choice, not the model's maximum context capacity.
+### Proposed Improvement: Document Chunking
 
-### Proposed Improvement: Document Chunking and MapReduce Summarisation
+A future version could implement a chunking and MapReduce summarisation approach.
 
-A future version could implement a chunking mechanism.
+Rather than selecting only the first 5,000 characters, the application could:
 
-Instead of truncating the extracted text, the application would divide the document into smaller sections, summarise each section independently and combine the individual summaries into a final document overview.
+1. Divide the extracted document text into smaller sections.
+2. Generate an individual summary for each section.
+3. Combine the individual summaries.
+4. Pass the combined summaries through the model to produce a final document overview.
 
-This would allow the application to process substantially longer documents while managing the amount of text supplied to the model at each stage.
+This would allow longer documents to be processed more comprehensively while managing the amount of text supplied to the model at each stage.
 
 ## 6. Limitations and Future Improvements
 
 ### 1. Long Document Processing
 
-**Current limitation:** Only the first 5,000 characters are summarised.
+**Current limitation:** Only the first 5,000 characters of extracted text are summarised.
 
-**Proposed improvement:** Implement text chunking and MapReduce summarisation to process longer documents in manageable sections.
+**Proposed improvement:** Implement document chunking and MapReduce summarisation to process longer documents.
 
 ### 2. Scanned PDF Documents
 
-**Current limitation:** PyPDF extracts embedded digital text but does not independently recognise text contained in scanned document images.
+**Current limitation:** PyPDF extracts embedded digital text but cannot independently recognise text contained in scanned document images.
 
-**Proposed improvement:** Integrate an Optical Character Recognition (OCR) solution to extract text from scanned pages.
+**Proposed improvement:** Integrate an Optical Character Recognition (OCR) engine, such as Tesseract OCR, to extract text from image-based PDF pages.
 
-### 3. Model Capacity and Summary Quality
+### 3. Model Capacity
 
-**Current limitation:** The 0.5-billion-parameter model is lightweight and suitable for relatively simple summarisation tasks. However, its smaller size may affect its ability to interpret complex arguments and preserve subtle contextual relationships.
+**Current limitation:** The 0.5-billion-parameter model is lightweight and suitable for relatively simple summarisation tasks. However, its smaller size may affect its ability to capture complex arguments and subtle contextual relationships.
 
-**Proposed improvement:** Experiment with larger Qwen model variants where sufficient computational resources are available.
+**Proposed improvement:** Experiment with larger Qwen model variants, such as Qwen2.5-3B-Instruct or Qwen2.5-7B-Instruct, when sufficient computational resources are available.
 
 ### 4. Summary Customisation
 
-**Current limitation:** The application generates a general-purpose summary with a fixed output limit of 300 new tokens.
+**Current limitation:** The current implementation uses a fixed prompt and a maximum generation allowance of 300 new tokens.
 
-**Proposed improvement:** Allow users to customise summary length, format and focus, such as executive summaries, key findings or bullet-point summaries.
+**Proposed improvement:** Introduce configurable summary lengths and output formats, such as bullet points, executive summaries and key findings.
 
 ## 7. Privacy and Data Handling
 
-This application uses an open-source language model rather than sending document contents to a separate paid AI summarisation API.
+This project uses an open-source language model instead of relying on a separate paid AI summarisation API.
 
-However, **the application runs in Google Colab, which is a cloud-based computing environment. It should therefore not be described as entirely private or as processing documents exclusively on the user's local computer.**
+However, the application runs through **Google Colab, a cloud-based computing environment**. It should therefore not be described as completely private or as processing documents exclusively on the user's local computer.
 
-When a PDF is uploaded, it is transferred to the Google Colab runtime, where its contents are extracted and processed. The model is also downloaded from Hugging Face into that environment.
+When a PDF is uploaded:
 
-Google explains that Colab executes code in a virtual machine associated with the user's account. These virtual machines are subject to idle deletion and maximum runtime limits.
+- The document is transferred from the user's computer to the Google Colab runtime.
+- PyPDF extracts its contents within that cloud environment.
+- The extracted text is passed to the Qwen model running in the same runtime.
+- The model generates the summary within the Colab environment.
 
-Users should therefore:
+The project does not require users to submit their document contents to a separate paid AI inference API. Nevertheless, the use of Google Colab involves cloud-based document processing.
 
-- Avoid uploading confidential, sensitive or personally identifiable documents.
-- Review Google's applicable privacy and data-handling policies before uploading documents.
-- Avoid sharing notebooks containing sensitive outputs.
-- Disconnect and delete the runtime when finished, particularly when working with documents that should not remain in the runtime environment.
+Users should avoid uploading confidential, sensitive or personally identifiable documents unless they have reviewed the applicable data-handling policies and are comfortable with the associated risks.
 
-The project reduces reliance on external AI inference APIs, but this does not eliminate cloud-based data processing.
+Google Colab runtimes are temporary cloud environments subject to inactivity and maximum-lifetime restrictions. Users should disconnect and delete their runtime after completing their work, particularly when processing sensitive documents.
 
 ## 8. Project Summary
 
-The AI-Powered PDF Summarizer demonstrates how Python, open-source language models and document-processing libraries can be combined to automate a common information-management task.
+The AI-Powered PDF Summarizer demonstrates how Python, PDF-processing libraries and open-source language models can be combined to automate document summarisation.
 
-By integrating PyPDF with Hugging Face Transformers and Qwen2.5-0.5B-Instruct, the application provides a lightweight, accessible approach to AI-assisted document summarisation.
+By integrating PyPDF with Hugging Face Transformers and Qwen2.5-0.5B-Instruct, the project provides a lightweight approach to extracting information from PDF documents and generating AI-assisted summaries.
 
-The current implementation establishes the foundation for more advanced capabilities, including long-document processing, OCR integration and customisable summaries.
+Although the current implementation has limitations involving document length, scanned PDFs and model capacity, it establishes a foundation for more advanced document-processing capabilities.
 
-**Future development goal:** Evolve the prototype into a more comprehensive PDF summarisation tool capable of processing entire documents while maintaining efficient resource utilisation.
+**Future development goal:** Expand the application to support comprehensive document summarisation, OCR integration and customisable summary generation.
 
-## References
+## 9. References
 
 - [Qwen2.5-0.5B-Instruct – Hugging Face](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct)
 - [Hugging Face Transformers Documentation](https://huggingface.co/docs/transformers/)
 - [PyPDF Documentation](https://pypdf.readthedocs.io/)
-- [Google Colab FAQ](https://research.google.com/colaboratory/faq.html)
 - [Google Colab](https://colab.research.google.com/)
+- [Google Colab FAQ](https://research.google.com/colaboratory/faq.html)
